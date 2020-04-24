@@ -1,21 +1,28 @@
 package com.pluralsight;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static javax.print.attribute.standard.MediaSizeName.B;
 
 public class WebDriverDemo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MalformedURLException {
         /* Commented OUT for the explicit wait demo below:
         //System.setProperty("webdriver.gecko.driver", "/home/me/IdeaProjects/geckodriver");
         //WebDriver driver4Firefox = new FirefoxDriver();
@@ -78,8 +85,28 @@ public class WebDriverDemo {
 
          */
 
-        System.setProperty("webdriver.chrome.driver", "/home/me/IdeaProjects/chromedriver");
-        WebDriver driver4Chrome = new ChromeDriver();
+        //System.setProperty("webdriver.chrome.driver", "/home/me/IdeaProjects/chromedriver81-69");
+        //System.setProperty("webdriver.chrome.driver", "/home/me/IdeaProjects/chromedriver81-20");
+        System.setProperty("webdriver.chrome.driver", "/home/me/IdeaProjects/chromedriver79-36");
+
+        // Remove the following line due to Selenium Sever instance and replace with:
+        //WebDriver driver4Chrome = new ChromeDriver();
+        WebDriver driver4Chrome = new RemoteWebDriver(new URL("http://127.0.0.1:4444/wd/hub"),
+                new ChromeOptions()     );
+        //                .addArguments("enable-automation")
+        //                .addArguments("--headless")
+        //                .addArguments("--window-size=1000,1000")
+        //                .addArguments("--no-sandbox")
+        //                .addArguments("--disable-extensions")
+        //                .addArguments("--dns-prefetch-disable")
+        //                .addArguments("--disable-gpu")      );
+        //                .addArguments("--disable-infobars");
+        //                .addArguments("--disable-dev-shm-usage")    );
+        //                .addArguments("--disable-browser-side-navigation");
+        //                .setPageLoadStrategy(PageLoadStrategy.NORMAL));
+
+        driver4Chrome.manage().timeouts().pageLoadTimeout(10L, TimeUnit.SECONDS);
+
         driver4Chrome.get("http://www.google.com.au");
 
         WebElement searchField = driver4Chrome.findElement(By.name("q"));
@@ -88,12 +115,12 @@ public class WebDriverDemo {
         searchField.submit();
 
         // Adding Implicit wait (A global wait) for 10 secs for every element related to driver4Chrome
-        //driver4Chrome.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        //driver4Chrome.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 
         // Setting up explicit waits, where the wait for each element is individually applied.
         // This explicit wait is for the LinkText for "Images"
-        WebDriverWait wait = new WebDriverWait(driver4Chrome, 30);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("Images")));
+        //WebDriverWait wait = new WebDriverWait(driver4Chrome, 30);
+        //wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("Images")));
 
         WebElement imagesLink = driver4Chrome.findElements(By.linkText("Images")).get(0);
         imagesLink.click();
